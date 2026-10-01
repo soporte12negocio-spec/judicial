@@ -33,7 +33,7 @@ class ResultadoEntidad(BaseModel):
     entidad_id: str
     nombre_entidad: str
     sigla: str
-    categoria: str # Penal, Judicial, Disciplinario, Fiscal, Convivencia, Tránsito, Familia, Inmuebles, Financiero
+    categoria: str # Penal, Judicial, Disciplinario, Fiscal, Convivencia, Tránsito, Familia, Inmuebles, Financiero, Salud, Social
     estado: str    # "limpio", "alerta", "observacion", "enlace_oficial", "error"
     semaforo: str  # "verde", "amarillo", "rojo", "gris"
     resumen: str
@@ -44,6 +44,12 @@ class ResultadoEntidad(BaseModel):
     score_financiero: Optional[int] = None
     calificacion_bancaria: Optional[str] = None
     total_propiedades: Optional[int] = None
+    grupo_sisben: Optional[str] = None
+    eps_nombre: Optional[str] = None
+    regimen_salud: Optional[str] = None
+    estado_afiliacion: Optional[str] = None
+    municipio_afiliacion: Optional[str] = None
+    subsidios_activos: Optional[List[str]] = None
     fecha_consulta: str = Field(default_factory=lambda: datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 class InformeUnificado(BaseModel):
@@ -55,7 +61,7 @@ class InformeUnificado(BaseModel):
     semaforo_global: str # "verde", "amarillo", "rojo"
     score_riesgo: int    # 0 a 100
     resumen_ejecutivo: str
-    total_entidades: int = 11
+    total_entidades: int = 14
     total_alertas: int = 0
     total_observaciones: int = 0
     resultados: List[ResultadoEntidad] = []

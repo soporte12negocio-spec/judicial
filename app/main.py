@@ -1,20 +1,20 @@
 import os
 from pathlib import Path
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from app.models import ConsultaRequest, InformeUnificado
 from app.services.engine import ejecutar_consulta_unificada
-from app.db import init_db, obtener_historial, obtener_informe_por_id
+from app.db import init_db, obtener_historial, obtener_informe_por_id, obtener_base_ciudadanos, TXT_PATH
 
 BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
     title="VerificaCO - Sistema Unificado de Antecedentes y Procesos Judiciales",
-    description="Plataforma de consulta unificada para antecedentes penales, judiciales, disciplinarios, fiscales y comparendos en Colombia.",
-    version="1.0.0"
+    description="Plataforma de consulta unificada para antecedentes penales, judiciales, disciplinarios, fiscales, comparendos, Sisbén, ADRES y subsidios en Colombia.",
+    version="1.2.0"
 )
 
 # Inicializar Base de Datos SQLite
@@ -42,6 +42,23 @@ async def api_consultar(req: ConsultaRequest):
         return informe
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error procesando la consulta: {str(e)}")
+
+@app.get("/api/base-ciudadanos")
+async def api_base_ciudadanos():
+    """Retorna la lista de ciudadanos guardados (cédula, nombre, apellido, fecha)."""
+    return obtener_base_ciudadanos()
+
+@app.get("/api/descargar-base-txt")
+async def api_descargar_base_txt():
+    """Permite descargar el archivo base_ciudadanos.txt con cédula, nombre y apellido."""
+    if not TXT_PATH.exists():
+        with open(TXT_PATH, "w", encoding="utf-8") as f:
+            f.write("CEDULA,NOMBRE,APELLIDO,FECHA_REGISTRO\n")
+    return FileResponse(
+        path=str(TXT_PATH),
+        filename="base_ciudadanos.txt",
+        media_type="text/plain"
+    )
 
 @app.get("/api/historial")
 async def api_historial():

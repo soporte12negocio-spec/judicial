@@ -23,6 +23,9 @@
                 </div>
             </div>
             <div class="header-actions">
+                <button type="button" id="btn-ver-base" class="btn-secondary" style="margin-right: 8px;">
+                    👥 Base de Ciudadanos (TXT/DB)
+                </button>
                 <button type="button" id="btn-ver-historial" class="btn-secondary">
                     📁 Historial de Consultas
                 </button>
@@ -47,10 +50,10 @@
             <!-- Tarjeta de Búsqueda Unificada -->
             <section class="search-card">
                 <div class="search-title">
-                    <span>📋 Formulario de Consulta Unificada del Expediente (11 en 1)</span>
+                    <span>📋 Formulario de Consulta Unificada del Expediente (14 en 1)</span>
                 </div>
                 <p class="search-desc">
-                    Verificación integral en: <strong>Rama Judicial</strong>, <strong>Policía Nacional (DIJIN)</strong>, <strong>Procuraduría (SIRI)</strong>, <strong>Contraloría (SIRECI)</strong>, <strong>REDAM</strong>, <strong>SIMIT (Comparendos)</strong>, <strong>RNMC (Convivencia)</strong>, <strong>RUNT (Licencias y Accidentes)</strong>, <strong>Instrumentos Públicos (SNR - Inmuebles)</strong>, <strong>Datacrédito Experian</strong> y <strong>CIFIN TransUnion</strong>.
+                    Verificación integral en: <strong>Rama Judicial</strong>, <strong>Policía Nacional (DIJIN)</strong>, <strong>Procuraduría (SIRI)</strong>, <strong>Contraloría (SIRECI)</strong>, <strong>REDAM</strong>, <strong>SIMIT (Comparendos)</strong>, <strong>RNMC (Convivencia)</strong>, <strong>RUNT (Licencias y Accidentes)</strong>, <strong>Instrumentos Públicos (SNR - Inmuebles)</strong>, <strong>Datacrédito Experian</strong>, <strong>CIFIN TransUnion</strong>, <strong>Sisbén IV (DNP)</strong>, <strong>ADRES BDUA (EPS y Régimen)</strong> y <strong>Subsidios del Gobierno (DPS Prosperidad Social)</strong>.
                 </p>
 
                 <form id="form-consulta">
@@ -116,7 +119,7 @@
                         </div>
 
                         <button type="submit" id="btn-consultar" class="btn-primary">
-                            <span>🔍 Consultar Expediente Completo (11 en 1)</span>
+                            <span>🔍 Consultar Expediente Completo (14 en 1)</span>
                         </button>
                     </div>
                 </form>
@@ -125,8 +128,8 @@
             <!-- Caja de Progreso Concurrente -->
             <section id="progress-card" class="progress-card">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
-                    <span>Consultando 11 bases de datos estatales y financieras en paralelo...</span>
-                    <span>11 Entidades Verificadas</span>
+                    <span>Consultando 14 bases de datos estatales, sociales y financieras en paralelo...</span>
+                    <span>14 Entidades Verificadas</span>
                 </div>
                 <div class="progress-bar-container">
                     <div id="progress-fill" class="progress-bar-fill"></div>
@@ -143,6 +146,9 @@
                     <div class="chip"><span class="chip-icon">⚪</span> Inmuebles Registrados (SNR)</div>
                     <div class="chip"><span class="chip-icon">⚪</span> Score Crediticio (Datacrédito)</div>
                     <div class="chip"><span class="chip-icon">⚪</span> Riesgo Bancario (CIFIN)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Nivel Sisbén IV (DNP)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Afiliación EPS (ADRES BDUA)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Subsidios Sociales (DPS)</div>
                 </div>
             </section>
 
@@ -179,7 +185,7 @@
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Alcance y Jurisdicción</span>
-                            <span class="meta-val">Nacional (Colombia) • 11 Bases</span>
+                            <span class="meta-val">Nacional (Colombia) • 14 Bases</span>
                         </div>
                     </div>
 
@@ -195,7 +201,7 @@
                     <!-- Fila de Métricas -->
                     <div class="metrics-row">
                         <div class="metric-box">
-                            <div id="metric-total" class="metric-num">11</div>
+                            <div id="metric-total" class="metric-num">14</div>
                             <div class="metric-label">Bases Consultadas</div>
                         </div>
                         <div class="metric-box">
@@ -214,11 +220,12 @@
 
                     <!-- Filtros por Categoría de Entidades -->
                     <div class="category-tabs" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
-                        <button type="button" class="tab-btn active" onclick="filtrarEntidades('todas')">Todas las Entidades (11)</button>
+                        <button type="button" class="tab-btn active" onclick="filtrarEntidades('todas')">Todas las Entidades (14)</button>
                         <button type="button" class="tab-btn" onclick="filtrarEntidades('penal_judicial')">⚖️ Penal y Judicial</button>
                         <button type="button" class="tab-btn" onclick="filtrarEntidades('transito_runt')">🚗 Tránsito y Accidentes</button>
                         <button type="button" class="tab-btn" onclick="filtrarEntidades('inmuebles')">🏠 Inmuebles (SNR)</button>
                         <button type="button" class="tab-btn" onclick="filtrarEntidades('financiero')">💳 Datacrédito y CIFIN</button>
+                        <button type="button" class="tab-btn" onclick="filtrarEntidades('salud_subsidios')">🏥 Salud, Sisbén y Subsidios</button>
                     </div>
 
                     <!-- Fichas Individuales de Entidades -->
@@ -253,6 +260,28 @@
             </div>
             <div id="history-list">
                 <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Base de Datos de Ciudadanos -->
+    <div id="base-modal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <div>
+                    <h3 style="color: #ffffff; margin-bottom: 4px;">👥 Base de Ciudadanos Consultados</h3>
+                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Registros capturados con Cédula, Nombre y Apellido.</p>
+                </div>
+                <button type="button" id="btn-close-base-modal" class="modal-close">&times;</button>
+            </div>
+            <div style="margin: 15px 0; display: flex; justify-content: space-between; align-items: center;">
+                <span id="base-contador" style="font-size: 0.85rem; color: #94a3b8;">Total: 0 ciudadanos registrados</span>
+                <a href="/api/descargar-base-txt" download="base_ciudadanos.txt" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px; text-decoration: none;">
+                    💾 Descargar Archivo TXT
+                </a>
+            </div>
+            <div id="base-list" style="max-height: 380px; overflow-y: auto;">
+                <!-- Se llena dinámicamente con JS -->
             </div>
         </div>
     </div>

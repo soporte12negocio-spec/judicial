@@ -59,15 +59,32 @@ function configurarEventos() {
         btnHistorial.addEventListener("click", abrirHistorial);
     }
 
+    const btnVerBase = document.getElementById("btn-ver-base");
+    if (btnVerBase) {
+        btnVerBase.addEventListener("click", abrirBaseCiudadanos);
+    }
+
     const btnCloseModal = document.getElementById("btn-close-modal");
     if (btnCloseModal) {
         btnCloseModal.addEventListener("click", cerrarModal);
+    }
+
+    const btnCloseBaseModal = document.getElementById("btn-close-base-modal");
+    if (btnCloseBaseModal) {
+        btnCloseBaseModal.addEventListener("click", cerrarBaseModal);
     }
 
     const modal = document.getElementById("history-modal");
     if (modal) {
         modal.addEventListener("click", (e) => {
             if (e.target === modal) cerrarModal();
+        });
+    }
+
+    const baseModal = document.getElementById("base-modal");
+    if (baseModal) {
+        baseModal.addEventListener("click", (e) => {
+            if (e.target === baseModal) cerrarBaseModal();
         });
     }
 
@@ -120,10 +137,10 @@ async function realizarConsulta() {
 
     // UI Loading state
     submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span>⏳ Consultando 11 Bases de Datos...</span>`;
+    submitBtn.innerHTML = `<span>⏳ Consultando 14 Bases de Datos...</span>`;
     progressCard.style.display = "block";
     reportSection.style.display = "none";
-    progressBar.style.width = "8%";
+    progressBar.style.width = "6%";
 
     // Simular progreso visual de chips
     const chips = document.querySelectorAll(".entity-chips .chip");
@@ -139,10 +156,10 @@ async function realizarConsulta() {
             chips[chipIdx].className = "chip active";
             const icon = chips[chipIdx].querySelector(".chip-icon");
             if (icon) icon.textContent = "🔄";
-            progressBar.style.width = `${Math.min(10 + (chipIdx * 8), 90)}%`;
+            progressBar.style.width = `${Math.min(10 + (chipIdx * 7), 92)}%`;
             chipIdx++;
         }
-    }, 120);
+    }, 110);
 
     try {
         const res = await fetch("/api/consultar", {
@@ -170,7 +187,7 @@ async function realizarConsulta() {
             progressCard.style.display = "none";
             renderizarInforme(informe);
             submitBtn.disabled = false;
-            submitBtn.innerHTML = `<span>🔍 Consultar Expediente Completo (11 en 1)</span>`;
+            submitBtn.innerHTML = `<span>🔍 Consultar Expediente Completo (14 en 1)</span>`;
             reportSection.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 500);
 
@@ -178,7 +195,7 @@ async function realizarConsulta() {
         clearInterval(interval);
         alert("Error ejecutando la consulta: " + e.message);
         submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span>🔍 Consultar Expediente Completo (11 en 1)</span>`;
+        submitBtn.innerHTML = `<span>🔍 Consultar Expediente Completo (14 en 1)</span>`;
         progressCard.style.display = "none";
     }
 }
@@ -251,6 +268,9 @@ function filtrarEntidades(categoria) {
         if (categoria === "financiero") {
             return ["datacredito", "cifin"].includes(ent.entidad_id);
         }
+        if (categoria === "salud_subsidios") {
+            return ["sisben", "adres_eps", "subsidios_dps"].includes(ent.entidad_id);
+        }
         return true;
     });
 
@@ -263,7 +283,7 @@ function filtrarEntidades(categoria) {
         else if (ent.semaforo === "amarillo") statusText = "Con Observaciones";
         else if (ent.estado === "enlace_oficial") statusText = "Verificado / Enlace Oficial";
 
-        // Badges especiales (Score crediticio, Calificación bancaria, Bienes raíces)
+        // Badges especiales (Score crediticio, Calificación bancaria, Bienes raíces, Sisbén, EPS, Subsidios)
         let badgesEspeciales = "";
         if (ent.score_financiero) {
             let colorScore = ent.score_financiero >= 700 ? "#10b981" : ent.score_financiero >= 550 ? "#f59e0b" : "#ef4444";
@@ -274,6 +294,19 @@ function filtrarEntidades(categoria) {
         }
         if (ent.total_propiedades !== undefined && ent.total_propiedades !== null) {
             badgesEspeciales += `<span style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.4); color: #10b981; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-left: 8px;">Inmuebles: ${ent.total_propiedades}</span>`;
+        }
+        if (ent.grupo_sisben) {
+            badgesEspeciales += `<span style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-left: 8px;">Grupo Sisbén: ${ent.grupo_sisben}</span>`;
+        }
+        if (ent.eps_nombre) {
+            let colorEps = (ent.estado_afiliacion && ent.estado_afiliacion.toUpperCase() === "ACTIVO") ? "#10b981" : "#f59e0b";
+            badgesEspeciales += `<span style="background: rgba(16, 185, 129, 0.12); border: 1px solid ${colorEps}; color: #e2e8f0; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px;">EPS: ${ent.eps_nombre} (${ent.regimen_salud || 'BDUA'}) • <strong style="color: ${colorEps};">${ent.estado_afiliacion || 'ACTIVO'}</strong></span>`;
+        }
+        if (ent.municipio_afiliacion) {
+            badgesEspeciales += `<span style="background: rgba(148, 163, 184, 0.15); border: 1px solid #64748b; color: #cbd5e1; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; margin-left: 8px;">📍 ${ent.municipio_afiliacion}</span>`;
+        }
+        if (ent.subsidios_activos && ent.subsidios_activos.length > 0) {
+            badgesEspeciales += `<span style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #fbbf24; padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 700; margin-left: 8px;">🎁 Beneficiario: ${ent.subsidios_activos.join(', ')}</span>`;
         }
 
         let detallesHtml = "";
@@ -393,3 +426,59 @@ function cerrarModal() {
     const modal = document.getElementById("history-modal");
     modal.style.display = "none";
 }
+
+async function abrirBaseCiudadanos() {
+    const modal = document.getElementById("base-modal");
+    const container = document.getElementById("base-list");
+    const contador = document.getElementById("base-contador");
+    modal.style.display = "flex";
+    container.innerHTML = "<p style='color: var(--text-secondary); padding: 10px;'>Cargando base de ciudadanos...</p>";
+
+    try {
+        const res = await fetch("/api/base-ciudadanos");
+        if (res.ok) {
+            const list = await res.json();
+            contador.textContent = `Total: ${list.length} ciudadano${list.length === 1 ? '' : 's'} registrado${list.length === 1 ? '' : 's'}`;
+            
+            if (list.length === 0) {
+                container.innerHTML = "<p style='color: var(--text-secondary); padding: 10px;'>No hay ciudadanos registrados en la base aún. Realice una consulta para registrar el primero.</p>";
+                return;
+            }
+
+            let tablaHtml = `
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--border-color); color: #94a3b8;">
+                            <th style="padding: 10px 8px;">Cédula</th>
+                            <th style="padding: 10px 8px;">Nombre(s)</th>
+                            <th style="padding: 10px 8px;">Apellido(s)</th>
+                            <th style="padding: 10px 8px;">Fecha Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            list.forEach(c => {
+                tablaHtml += `
+                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e2e8f0;">
+                        <td style="padding: 10px 8px; font-weight: 700; color: #38bdf8;">${c.cedula}</td>
+                        <td style="padding: 10px 8px;">${c.nombre}</td>
+                        <td style="padding: 10px 8px;">${c.apellido}</td>
+                        <td style="padding: 10px 8px; color: #94a3b8; font-size: 0.78rem;">${c.fecha_registro}</td>
+                    </tr>
+                `;
+            });
+
+            tablaHtml += `</tbody></table>`;
+            container.innerHTML = tablaHtml;
+        }
+    } catch (e) {
+        container.innerHTML = "<p style='color: #ef4444; padding: 10px;'>Error cargando la base de datos de ciudadanos.</p>";
+    }
+}
+
+function cerrarBaseModal() {
+    const modal = document.getElementById("base-modal");
+    modal.style.display = "none";
+}
+
