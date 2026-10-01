@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VerificaCO - Expediente Unificado de Antecedentes, Tránsito, Inmuebles y Crédito</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+    <!-- Header Principal -->
+    <header>
+        <div class="container header-content">
+            <div class="logo-area">
+                <div class="flag-badge">
+                    <div class="c-yellow"></div>
+                    <div class="c-blue"></div>
+                    <div class="c-red"></div>
+                </div>
+                <div>
+                    <div class="logo-title">Verifica<span>CO</span></div>
+                    <div class="logo-tagline">Expediente Unificado: Antecedentes, Tránsito, Inmuebles y Centrales de Riesgo • Colombia</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button type="button" id="btn-ver-historial" class="btn-secondary">
+                    📁 Historial de Consultas
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Casos Demo Pre-cargados -->
+    <div class="demo-banner">
+        <div class="container demo-content">
+            <div style="font-weight: 600; color: #93c5fd;">⚡ Cargar Casos de Demostración:</div>
+            <div id="demo-pills-container" class="demo-pills">
+                <!-- Inyectado dinámicamente desde JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <main>
+        <div class="container">
+
+            <!-- Tarjeta de Búsqueda Unificada -->
+            <section class="search-card">
+                <div class="search-title">
+                    <span>📋 Formulario de Consulta Unificada del Expediente (11 en 1)</span>
+                </div>
+                <p class="search-desc">
+                    Verificación integral en: <strong>Rama Judicial</strong>, <strong>Policía Nacional (DIJIN)</strong>, <strong>Procuraduría (SIRI)</strong>, <strong>Contraloría (SIRECI)</strong>, <strong>REDAM</strong>, <strong>SIMIT (Comparendos)</strong>, <strong>RNMC (Convivencia)</strong>, <strong>RUNT (Licencias y Accidentes)</strong>, <strong>Instrumentos Públicos (SNR - Inmuebles)</strong>, <strong>Datacrédito Experian</strong> y <strong>CIFIN TransUnion</strong>.
+                </p>
+
+                <form id="form-consulta">
+                    <input type="hidden" id="perfil_demo_val" value="">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="tipo_documento">Tipo de Documento *</label>
+                            <select id="tipo_documento" class="form-control" required>
+                                <option value="CC" selected>Cédula de Ciudadanía (CC)</option>
+                                <option value="CE">Cédula de Extranjería (CE)</option>
+                                <option value="NIT">Número de Identificación Tributaria (NIT)</option>
+                                <option value="PAS">Pasaporte (PAS)</option>
+                                <option value="TI">Tarjeta de Identidad (TI)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="numero_documento">Número de Documento *</label>
+                            <input type="text" id="numero_documento" class="form-control" placeholder="Ej: 1018452930" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="primer_nombre">Primer Nombre *</label>
+                            <input type="text" id="primer_nombre" class="form-control" placeholder="Ej: JUAN" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="segundo_nombre">Segundo Nombre</label>
+                            <input type="text" id="segundo_nombre" class="form-control" placeholder="Ej: CARLOS">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="primer_apellido">Primer Apellido *</label>
+                            <input type="text" id="primer_apellido" class="form-control" placeholder="Ej: PÉREZ" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="segundo_apellido">Segundo Apellido</label>
+                            <input type="text" id="segundo_apellido" class="form-control" placeholder="Ej: GÓMEZ">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha_expedicion">Fecha Expedición (Opcional)</label>
+                            <input type="date" id="fecha_expedicion" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Autorización Habeas Data Financiero -->
+                    <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.25); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 16px; font-size: 0.8rem; color: #cbd5e1;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                            <input type="checkbox" id="autorizacion_financiera" checked>
+                            <span>Autorizo expresamente la verificación del historial crediticio y de endeudamiento en Datacrédito y CIFIN de conformidad con la Ley 1266 de 2008 y Ley 2157 de 2021 (Habeas Data Financiero).</span>
+                        </label>
+                    </div>
+
+                    <div class="form-footer">
+                        <div class="toggle-group">
+                            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="modo_demo">
+                                <span>Modo Simulación / Casos Sintéticos (Desmarcado = Consulta en Vivo Real)</span>
+                            </label>
+                        </div>
+
+                        <button type="submit" id="btn-consultar" class="btn-primary">
+                            <span>🔍 Consultar Expediente Completo (11 en 1)</span>
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Caja de Progreso Concurrente -->
+            <section id="progress-card" class="progress-card">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem;">
+                    <span>Consultando 11 bases de datos estatales y financieras en paralelo...</span>
+                    <span>11 Entidades Verificadas</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="progress-fill" class="progress-bar-fill"></div>
+                </div>
+                <div class="entity-chips">
+                    <div class="chip"><span class="chip-icon">⚪</span> Policía Nacional (DIJIN)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Rama Judicial (Justicia XXI)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Procuraduría General (SIRI)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Contraloría General (SIRECI)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Deudores Alimentarios (REDAM)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Multas de Tránsito (SIMIT)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Medidas Correctivas (RNMC)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Licencias y Accidentes (RUNT)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Inmuebles Registrados (SNR)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Score Crediticio (Datacrédito)</div>
+                    <div class="chip"><span class="chip-icon">⚪</span> Riesgo Bancario (CIFIN)</div>
+                </div>
+            </section>
+
+            <!-- Sección del Informe Unificado (Imprimible) -->
+            <section id="report-section" class="report-section">
+
+                <!-- Encabezado del Certificado -->
+                <div class="report-header-card">
+                    <div class="report-watermark">EXPEDIENTE VERIFICACO OFICIAL</div>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2 style="font-size: 1.45rem; color: #ffffff; margin-bottom: 4px;">Expediente Integral de Seguridad, Cumplimiento y Solvencia</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.85rem;">República de Colombia • Consulta de Antecedentes, Tránsito, Inmuebles y Centrales de Riesgo</p>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">CÓDIGO ÚNICO DE EXPEDIENTE</div>
+                            <div id="rep-id" style="font-family: monospace; font-size: 1.15rem; font-weight: 700; color: var(--brand-cyan);">VCO-00000000</div>
+                        </div>
+                    </div>
+
+                    <div class="report-meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">Ciudadano Consultado</span>
+                            <span id="rep-ciudadano" class="meta-val">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Documento Identificación</span>
+                            <span id="rep-documento" class="meta-val">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Fecha y Hora de Emisión</span>
+                            <span id="rep-fecha" class="meta-val">--</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Alcance y Jurisdicción</span>
+                            <span class="meta-val">Nacional (Colombia) • 11 Bases</span>
+                        </div>
+                    </div>
+
+                    <!-- Semáforo de Riesgo Global -->
+                    <div id="rep-semaforo-banner" class="semaforo-banner verde">
+                        <div id="semaforo-icon" class="semaforo-icon">🟢</div>
+                        <div class="semaforo-text">
+                            <h3 id="semaforo-title">ESTADO FAVORABLE / SIN NOVEDADES</h3>
+                            <p id="semaforo-desc">El ciudadano no presenta requerimientos judiciales pendientes ni sanciones reportadas.</p>
+                        </div>
+                    </div>
+
+                    <!-- Fila de Métricas -->
+                    <div class="metrics-row">
+                        <div class="metric-box">
+                            <div id="metric-total" class="metric-num">11</div>
+                            <div class="metric-label">Bases Consultadas</div>
+                        </div>
+                        <div class="metric-box">
+                            <div id="metric-alertas" class="metric-num" style="color: var(--status-red);">0</div>
+                            <div class="metric-label">Alertas Críticas (Penal/Embargo/Mora)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div id="metric-observaciones" class="metric-num" style="color: var(--status-yellow);">0</div>
+                            <div class="metric-label">Observaciones (Civil/Tránsito/Hipoteca)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div id="metric-score" class="metric-num" style="color: var(--brand-cyan);">0/100</div>
+                            <div class="metric-label">Índice Global de Riesgo</div>
+                        </div>
+                    </div>
+
+                    <!-- Filtros por Categoría de Entidades -->
+                    <div class="category-tabs" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+                        <button type="button" class="tab-btn active" onclick="filtrarEntidades('todas')">Todas las Entidades (11)</button>
+                        <button type="button" class="tab-btn" onclick="filtrarEntidades('penal_judicial')">⚖️ Penal y Judicial</button>
+                        <button type="button" class="tab-btn" onclick="filtrarEntidades('transito_runt')">🚗 Tránsito y Accidentes</button>
+                        <button type="button" class="tab-btn" onclick="filtrarEntidades('inmuebles')">🏠 Inmuebles (SNR)</button>
+                        <button type="button" class="tab-btn" onclick="filtrarEntidades('financiero')">💳 Datacrédito y CIFIN</button>
+                    </div>
+
+                    <!-- Fichas Individuales de Entidades -->
+                    <h3 style="font-size: 1.1rem; margin-bottom: 16px; color: #ffffff;">Detalle Certificado por Base de Datos</h3>
+                    <div id="entity-cards-container" class="entity-cards-grid">
+                        <!-- Generado dinámicamente con JS -->
+                    </div>
+
+                    <!-- Botones de Acción / Exportar -->
+                    <div class="report-actions">
+                        <button type="button" class="btn-secondary" onclick="exportarJSON()">
+                            📥 Exportar Expediente en JSON
+                        </button>
+                        <button type="button" class="btn-primary" onclick="imprimirInforme()">
+                            🖨️ Imprimir / Guardar Expediente en PDF
+                        </button>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Modal de Historial -->
+    <div id="history-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color: #ffffff;">Historial de Consultas Guardadas</h3>
+                <button type="button" id="btn-close-modal" class="modal-close">&times;</button>
+            </div>
+            <div id="history-list">
+                <!-- Se llena con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Script principal -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
