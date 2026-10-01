@@ -59,32 +59,15 @@ function configurarEventos() {
         btnHistorial.addEventListener("click", abrirHistorial);
     }
 
-    const btnVerBase = document.getElementById("btn-ver-base");
-    if (btnVerBase) {
-        btnVerBase.addEventListener("click", abrirBaseCiudadanos);
-    }
-
     const btnCloseModal = document.getElementById("btn-close-modal");
     if (btnCloseModal) {
         btnCloseModal.addEventListener("click", cerrarModal);
-    }
-
-    const btnCloseBaseModal = document.getElementById("btn-close-base-modal");
-    if (btnCloseBaseModal) {
-        btnCloseBaseModal.addEventListener("click", cerrarBaseModal);
     }
 
     const modal = document.getElementById("history-modal");
     if (modal) {
         modal.addEventListener("click", (e) => {
             if (e.target === modal) cerrarModal();
-        });
-    }
-
-    const baseModal = document.getElementById("base-modal");
-    if (baseModal) {
-        baseModal.addEventListener("click", (e) => {
-            if (e.target === baseModal) cerrarBaseModal();
         });
     }
 
@@ -424,61 +407,6 @@ async function cargarInformeGuardado(idInforme) {
 
 function cerrarModal() {
     const modal = document.getElementById("history-modal");
-    modal.style.display = "none";
-}
-
-async function abrirBaseCiudadanos() {
-    const modal = document.getElementById("base-modal");
-    const container = document.getElementById("base-list");
-    const contador = document.getElementById("base-contador");
-    modal.style.display = "flex";
-    container.innerHTML = "<p style='color: var(--text-secondary); padding: 10px;'>Cargando base de ciudadanos...</p>";
-
-    try {
-        const res = await fetch("/api/base-ciudadanos");
-        if (res.ok) {
-            const list = await res.json();
-            contador.textContent = `Total: ${list.length} ciudadano${list.length === 1 ? '' : 's'} registrado${list.length === 1 ? '' : 's'}`;
-            
-            if (list.length === 0) {
-                container.innerHTML = "<p style='color: var(--text-secondary); padding: 10px;'>No hay ciudadanos registrados en la base aún. Realice una consulta para registrar el primero.</p>";
-                return;
-            }
-
-            let tablaHtml = `
-                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 1px solid var(--border-color); color: #94a3b8;">
-                            <th style="padding: 10px 8px;">Cédula</th>
-                            <th style="padding: 10px 8px;">Nombre(s)</th>
-                            <th style="padding: 10px 8px;">Apellido(s)</th>
-                            <th style="padding: 10px 8px;">Fecha Registro</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            list.forEach(c => {
-                tablaHtml += `
-                    <tr style="border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #e2e8f0;">
-                        <td style="padding: 10px 8px; font-weight: 700; color: #38bdf8;">${c.cedula}</td>
-                        <td style="padding: 10px 8px;">${c.nombre}</td>
-                        <td style="padding: 10px 8px;">${c.apellido}</td>
-                        <td style="padding: 10px 8px; color: #94a3b8; font-size: 0.78rem;">${c.fecha_registro}</td>
-                    </tr>
-                `;
-            });
-
-            tablaHtml += `</tbody></table>`;
-            container.innerHTML = tablaHtml;
-        }
-    } catch (e) {
-        container.innerHTML = "<p style='color: #ef4444; padding: 10px;'>Error cargando la base de datos de ciudadanos.</p>";
-    }
-}
-
-function cerrarBaseModal() {
-    const modal = document.getElementById("base-modal");
     modal.style.display = "none";
 }
 

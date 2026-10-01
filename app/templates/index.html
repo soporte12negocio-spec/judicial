@@ -23,9 +23,6 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button type="button" id="btn-ver-base" class="btn-secondary" style="margin-right: 8px;">
-                    👥 Base de Ciudadanos (TXT/DB)
-                </button>
                 <button type="button" id="btn-ver-historial" class="btn-secondary">
                     📁 Historial de Consultas
                 </button>
@@ -260,28 +257,6 @@
             </div>
             <div id="history-list">
                 <!-- Se llena con JS -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de Base de Datos de Ciudadanos -->
-    <div id="base-modal" class="modal-overlay">
-        <div class="modal-content" style="max-width: 650px;">
-            <div class="modal-header">
-                <div>
-                    <h3 style="color: #ffffff; margin-bottom: 4px;">👥 Base de Ciudadanos Consultados</h3>
-                    <p style="font-size: 0.8rem; color: var(--text-secondary); margin: 0;">Registros capturados con Cédula, Nombre y Apellido.</p>
-                </div>
-                <button type="button" id="btn-close-base-modal" class="modal-close">&times;</button>
-            </div>
-            <div style="margin: 15px 0; display: flex; justify-content: space-between; align-items: center;">
-                <span id="base-contador" style="font-size: 0.85rem; color: #94a3b8;">Total: 0 ciudadanos registrados</span>
-                <a href="/api/descargar-base-txt" download="base_ciudadanos.txt" class="btn-secondary" style="font-size: 0.8rem; padding: 6px 12px; text-decoration: none;">
-                    💾 Descargar Archivo TXT
-                </a>
-            </div>
-            <div id="base-list" style="max-height: 380px; overflow-y: auto;">
-                <!-- Se llena dinámicamente con JS -->
             </div>
         </div>
     </div>

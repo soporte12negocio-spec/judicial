@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base de Ciudadanos (Privada) • VerificaCO</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .admin-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        /* Lock Screen Card */
+        .pin-card {
+            max-width: 440px;
+            margin: 60px auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 36px 30px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+        }
+        .pin-icon {
+            font-size: 3.5rem;
+            margin-bottom: 12px;
+            display: inline-block;
+            animation: pulse-lock 2s infinite ease-in-out;
+        }
+        @keyframes pulse-lock {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+        .pin-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .pin-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+        .pin-input-group {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .pin-input {
+            width: 180px;
+            letter-spacing: 14px;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            padding: 10px 14px;
+            background: #090d16;
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--brand-cyan);
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .pin-input:focus {
+            border-color: var(--brand-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.25);
+        }
+        .pin-error {
+            display: none;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+        }
+
+        /* Unlocked Dashboard */
+        .dash-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+        }
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 18px;
+            margin-bottom: 20px;
+        }
+        .dash-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+        .search-box {
+            background: #090d16;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: #ffffff;
+            padding: 8px 14px;
+            font-size: 0.88rem;
+            width: 280px;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: var(--brand-cyan);
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+            background: #090d16;
+        }
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+        .custom-table th {
+            background: #0f172a;
+            color: #94a3b8;
+            font-weight: 600;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+        .custom-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+        }
+        .custom-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .badge-cedula {
+            color: #38bdf8;
+            font-weight: 700;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Principal -->
+    <header>
+        <div class="container header-content">
+            <div class="logo-area">
+                <div class="flag-badge">
+                    <div class="c-yellow"></div>
+                    <div class="c-blue"></div>
+                    <div class="c-red"></div>
+                </div>
+                <div>
+                    <div class="logo-title">Verifica<span>CO</span> <span style="font-size: 0.8rem; background: rgba(239, 68, 68, 0.2); border: 1px solid #ef4444; color: #fca5a5; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 8px;">ADMIN PRIVADO</span></div>
+                    <div class="logo-tagline">Administración Privada de la Base de Ciudadanos Registrados</div>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="/" class="btn-secondary" style="text-decoration: none;">
+                    ⬅️ Volver al Portal de Consultas
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="admin-container">
+
+        <!-- 1. PANTALLA DE BLOQUEO POR PIN (Default) -->
+        <section id="pin-screen" class="pin-card">
+            <div class="pin-icon">🔒</div>
+            <h2 class="pin-title">Acceso Restringido</h2>
+            <p class="pin-desc">
+                Esta sección contiene información privada de ciudadanos consultados. Ingrese el <strong>PIN de 4 dígitos</strong> autorizado para desbloquearla.
+            </p>
+
+            <div id="pin-error-box" class="pin-error">
+                ❌ PIN de seguridad incorrecto. Intente de nuevo.
+            </div>
+
+            <form id="form-pin" onsubmit="event.preventDefault(); verificarPin();">
+                <div class="pin-input-group">
+                    <input type="password" id="pin-input" class="pin-input" maxlength="4" placeholder="••••" autofocus required autocomplete="off">
+                </div>
+                <button type="submit" id="btn-unlock" class="btn-primary" style="width: 100%; justify-content: center; padding: 12px;">
+                    <span>🔓 Desbloquear Base de Datos</span>
+                </button>
+            </form>
+        </section>
+
+        <!-- 2. PANEL PRIVADO DESBLOQUEADO -->
+        <section id="data-screen" class="dash-card" style="display: none;">
+            <div class="dash-header">
+                <div>
+                    <h2 style="color: #ffffff; font-size: 1.35rem; margin-bottom: 4px;">👥 Base Consolidada de Ciudadanos</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.85rem; margin: 0;">
+                        Registros capturados automáticamente durante las consultas: <strong>Cédula, Nombre y Apellido</strong>.
+                    </p>
+                </div>
+                <button type="button" onclick="cerrarSesion()" class="btn-secondary" style="font-size: 0.82rem; padding: 6px 12px;">
+                    🔒 Bloquear y Salir
+                </button>
+            </div>
+
+            <div class="dash-tools">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="text" id="filtro-busqueda" class="search-box" placeholder="🔍 Buscar por cédula, nombre..." oninput="filtrarTabla()">
+                    <span id="contador-badge" style="background: rgba(6, 182, 212, 0.12); border: 1px solid rgba(6, 182, 212, 0.3); color: var(--brand-cyan); padding: 5px 12px; border-radius: 14px; font-size: 0.82rem; font-weight: 700;">
+                        0 ciudadanos
+                    </span>
+                </div>
+                <div>
+                    <a id="btn-descargar-txt" href="#" class="btn-primary" style="text-decoration: none; padding: 8px 16px; font-size: 0.85rem;">
+                        💾 Descargar base_ciudadanos.txt
+                    </a>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Cédula</th>
+                            <th>Primer Nombre</th>
+                            <th>Primer Apellido</th>
+                            <th>Fecha de Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-cuerpo">
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 25px;">
+                                Cargando datos...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        let ciudadanosGlobal = [];
+        let pinActual = "";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedPin = sessionStorage.getItem("admin_pin_verifica");
+            if (savedPin) {
+                document.getElementById("pin-input").value = savedPin;
+                verificarPin(savedPin);
+            }
+        });
+
+        async function verificarPin(pinOverride = null) {
+            const pinVal = pinOverride || document.getElementById("pin-input").value.trim();
+            const errorBox = document.getElementById("pin-error-box");
+            const btnUnlock = document.getElementById("btn-unlock");
+
+            if (!pinVal || pinVal.length !== 4) {
+                errorBox.textContent = "El PIN debe tener exactamente 4 dígitos.";
+                errorBox.style.display = "block";
+                return;
+            }
+
+            btnUnlock.disabled = true;
+            btnUnlock.innerHTML = "<span>Verificando...</span>";
+            errorBox.style.display = "none";
+
+            try {
+                const res = await fetch("/api/validar-pin", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ pin: pinVal })
+                });
+
+                if (res.ok) {
+                    pinActual = pinVal;
+                    sessionStorage.setItem("admin_pin_verifica", pinVal);
+                    await cargarDatos(pinVal);
+                } else {
+                    sessionStorage.removeItem("admin_pin_verifica");
+                    errorBox.textContent = "❌ PIN de seguridad incorrecto. Acceso denegado.";
+                    errorBox.style.display = "block";
+                    document.getElementById("pin-input").value = "";
+                    document.getElementById("pin-input").focus();
+                }
+            } catch (e) {
+                errorBox.textContent = "Error comunicando con el servidor.";
+                errorBox.style.display = "block";
+            } finally {
+                btnUnlock.disabled = false;
+                btnUnlock.innerHTML = "<span>🔓 Desbloquear Base de Datos</span>";
+            }
+        }
+
+        async function cargarDatos(pin) {
+            try {
+                const res = await fetch(`/api/base-ciudadanos?pin=${encodeURIComponent(pin)}`);
+                if (!res.ok) throw new Error("Acceso no autorizado");
+
+                ciudadanosGlobal = await res.json();
+
+                // Configurar enlace de descarga con PIN
+                const btnDescarga = document.getElementById("btn-descargar-txt");
+                btnDescarga.href = `/api/descargar-base-txt?pin=${encodeURIComponent(pin)}`;
+
+                // Mostrar pantalla de datos
+                document.getElementById("pin-screen").style.display = "none";
+                document.getElementById("data-screen").style.display = "block";
+
+                renderizarTabla(ciudadanosGlobal);
+            } catch (e) {
+                alert("Error cargando los datos: " + e.message);
+                cerrarSesion();
+            }
+        }
+
+        function renderizarTabla(lista) {
+            const tbody = document.getElementById("tabla-cuerpo");
+            const badge = document.getElementById("contador-badge");
+            badge.textContent = `${lista.length} ciudadano${lista.length === 1 ? '' : 's'}`;
+
+            if (lista.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 30px;">
+                            No se encontraron registros de ciudadanos en la base de datos.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let html = "";
+            lista.forEach((c, idx) => {
+                html += `
+                    <tr>
+                        <td style="color: #64748b; font-size: 0.8rem;">${idx + 1}</td>
+                        <td><span class="badge-cedula">${c.cedula}</span></td>
+                        <td style="font-weight: 600; color: #ffffff;">${c.nombre}</td>
+                        <td style="font-weight: 600; color: #ffffff;">${c.apellido}</td>
+                        <td style="color: #94a3b8; font-size: 0.8rem;">${c.fecha_registro}</td>
+                    </tr>
+                `;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function filtrarTabla() {
+            const query = document.getElementById("filtro-busqueda").value.trim().toUpperCase();
+            if (!query) {
+                renderizarTabla(ciudadanosGlobal);
+                return;
+            }
+            const filtrados = ciudadanosGlobal.filter(c => 
+                c.cedula.includes(query) ||
+                c.nombre.toUpperCase().includes(query) ||
+                c.apellido.toUpperCase().includes(query)
+            );
+            renderizarTabla(filtrados);
+        }
+
+        function cerrarSesion() {
+            sessionStorage.removeItem("admin_pin_verifica");
+            pinActual = "";
+            document.getElementById("pin-input").value = "";
+            document.getElementById("data-screen").style.display = "none";
+            document.getElementById("pin-screen").style.display = "block";
+            document.getElementById("pin-error-box").style.display = "none";
+        }
+    </script>
+</body>
+</html>

@@ -31,9 +31,23 @@ os.makedirs(static_dir / "js", exist_ok=True)
 templates = Jinja2Templates(directory=str(templates_dir))
 app.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
+PIN_ACCESO = "1414"
+
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
+
+@app.get("/base", response_class=HTMLResponse)
+async def pagina_base_privada(request: Request):
+    """Página oculta y protegida para consultar y descargar la base de datos de ciudadanos."""
+    return templates.TemplateResponse(request=request, name="base.html")
+
+@app.post("/api/validar-pin")
+async def api_validar_pin(payload: dict):
+    pin = str(payload.get("pin", "")).strip()
+    if pin == PIN_ACCESO:
+        return {"valido": True, "mensaje": "Acceso autorizado"}
+    raise HTTPException(status_code=401, detail="PIN incorrecto")
 
 @app.post("/api/consultar", response_model=InformeUnificado)
 async def api_consultar(req: ConsultaRequest):
@@ -44,13 +58,17 @@ async def api_consultar(req: ConsultaRequest):
         raise HTTPException(status_code=500, detail=f"Error procesando la consulta: {str(e)}")
 
 @app.get("/api/base-ciudadanos")
-async def api_base_ciudadanos():
-    """Retorna la lista de ciudadanos guardados (cédula, nombre, apellido, fecha)."""
+async def api_base_ciudadanos(pin: str = ""):
+    """Retorna la lista de ciudadanos guardados únicamente si el PIN es correcto."""
+    if pin != PIN_ACCESO:
+        raise HTTPException(status_code=401, detail="PIN de seguridad incorrecto")
     return obtener_base_ciudadanos()
 
 @app.get("/api/descargar-base-txt")
-async def api_descargar_base_txt():
-    """Permite descargar el archivo base_ciudadanos.txt con cédula, nombre y apellido."""
+async def api_descargar_base_txt(pin: str = ""):
+    """Permite descargar el archivo base_ciudadanos.txt únicamente con PIN válido."""
+    if pin != PIN_ACCESO:
+        raise HTTPException(status_code=401, detail="PIN de seguridad incorrecto")
     if not TXT_PATH.exists():
         with open(TXT_PATH, "w", encoding="utf-8") as f:
             f.write("CEDULA,NOMBRE,APELLIDO,FECHA_REGISTRO\n")
